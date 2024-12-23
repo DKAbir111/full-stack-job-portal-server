@@ -3,6 +3,7 @@ const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const createBlogRouter = require('./routes/BlogRoute')
 const createCommentRouter = require('./routes/CommentRoute')
+const createWishlistRouter = require('./routes/WishListRoute')
 
 require('dotenv').config()
 
@@ -36,12 +37,16 @@ async function run() {
         const database = client.db('LetsBlogDB')
         const blogCollections = database.collection('blogs');
         const commentCollections = database.collection('comments');
+        const wishlistCollections = database.collection('wishlists');
 
         //Blog Routes
         app.use('/api', createBlogRouter(blogCollections));
 
         //Comment Routes
         app.use('/api', createCommentRouter(commentCollections));
+
+        //Wishlist Routes
+        app.use('/api', createWishlistRouter(wishlistCollections));
 
 
 
