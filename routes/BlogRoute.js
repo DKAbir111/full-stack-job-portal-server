@@ -25,6 +25,39 @@ const createBlogRouter = (BlogCollections) => {
         else res.status(404).send('Not Found');
     })
 
+    //fetch 6 latest bog for banner
+    router.get('/latest-blogs', async (req, res) => {
+        try {
+            const result = await BlogCollections.find()
+                .sort({ createdAt: -1 })
+                .limit(6)
+                .toArray();
+
+            res.send(result);
+        } catch (error) {
+            res.status(500).send({ message: 'Error fetching blogs', error });
+        }
+    });
+
+    //top post based on word count
+    router.get('/top-posts', async (req, res) => {
+        const blogs = await BlogCollections.find().toArray();
+
+        const blogsWithWordCount = blogs.map(blog => ({
+            ...blog,
+            wordCount: blog.longDescription.split(' ').length,
+        }));
+
+
+        const topPosts = blogsWithWordCount
+            .sort((a, b) => b.wordCount - a.wordCount)
+            .slice(0, 10);
+
+        res.send(topPosts);
+    });
+
+
+
     //update a blog by id
     router.put('/blog/:id', async (req, res) => {
         const id = new ObjectId(req.params.id);

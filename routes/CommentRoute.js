@@ -11,26 +11,27 @@ const createCommentRouter = (commentCollections) => {
     })
 
     //get all comments
-    router.get('/comments', async (req, res) => {
+    router.get('/comment', async (req, res) => {
         const result = await commentCollections.find().toArray();
         res.send(result);
     })
 
-    //get a single comment by id
-    router.get('/comment/:id', async (req, res) => {
-        const id = new ObjectId(req.params.id);
-        const result = await commentCollections.findOne({ _id: id });
-        if (result) res.send(result);
-        else res.status(404).send('Not Found');
+    //get comment by blog id
+    router.get('/comment/:blogId', async (req, res) => {
+        const blogId = req.params.blogId;
+        const result = await commentCollections.find({ blogId }).toArray();
+        res.send(result);
+    })
+
+    //delete a comment by id
+    router.delete('/comment/:id', async (req, res) => {
+        const id = req.params.id;
+        const result = await commentCollections.deleteOne({ _id: new ObjectId(id) });
+        if (result.deletedCount === 0) return res.status(404).send('Not Found');
+        res.send(result);
     })
 
     //update a comment by id
-    router.put('/comment/:id', async (req, res) => {
-        const id = new ObjectId(req.params.id);
-        const updatedComment = req.body;
-        const result = await commentCollections.updateOne({ _id: id }, { $set: updatedComment });
-        res.send(result);
-    })
 
     return router;
 }
