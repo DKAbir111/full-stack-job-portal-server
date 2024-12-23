@@ -1,9 +1,15 @@
 const express = require('express');
+const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const createBlogRouter = require('./routes/BlogRoute')
 
 require('dotenv').config()
 
 const app = express()
+//middleware
+app.use(cors());
+app.use(express.json())
+
 
 app.get('/', (req, res) => {
 
@@ -24,6 +30,17 @@ async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
+
+        //data base
+        const database = client.db('LetsBlogDB')
+        const blogCollections = database.collection('blogs');
+
+        //Blog Routes
+        app.use('/api', createBlogRouter(blogCollections));
+
+
+
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
