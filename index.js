@@ -46,7 +46,7 @@ async function run() {
         app.use('/api', createCommentRouter(commentCollections));
 
         //Wishlist Routes
-        app.use('/api', createWishlistRouter(wishlistCollections));
+        app.use('/api', createWishlistRouter(wishlistCollections, blogCollections));
 
 
 
