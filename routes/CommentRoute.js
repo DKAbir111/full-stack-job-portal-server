@@ -23,6 +23,18 @@ const createCommentRouter = (commentCollections) => {
         res.send(result);
     })
 
+    // Fetch 3 random comments
+    router.get('/comments/random', async (req, res) => {
+        try {
+            const randomComments = await commentCollections.aggregate([
+                { $sample: { size: 3 } }
+            ]).toArray();
+            res.send(randomComments);
+        } catch (error) {
+            res.status(500).send({ message: "Error fetching random comments", error });
+        }
+
+    });
     //delete a comment by id
     router.delete('/comment/:id', async (req, res) => {
         const id = req.params.id;

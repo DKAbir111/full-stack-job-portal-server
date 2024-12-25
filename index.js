@@ -4,6 +4,8 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const createBlogRouter = require('./routes/BlogRoute')
 const createCommentRouter = require('./routes/CommentRoute')
 const createWishlistRouter = require('./routes/WishListRoute')
+const cookieParser = require('cookie-parser')
+var jwt = require('jsonwebtoken');
 
 require('dotenv').config()
 
@@ -38,6 +40,22 @@ async function run() {
         const blogCollections = database.collection('blogs');
         const commentCollections = database.collection('comments');
         const wishlistCollections = database.collection('wishlists');
+
+        //jwt authentication
+        app.post('/jwt', (req, res) => {
+            const user = req.body;
+            const token = jwt.sign(user, process.env.JWT_SECRET, {
+                expiresIn: '1h',
+            })
+            res
+                .cookie('token', token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+                })
+                .send({ success: true });
+        })
+
         //creating index for enabling search
         await blogCollections.createIndex({ title: "text", description: "text" });
         //Blog Routes

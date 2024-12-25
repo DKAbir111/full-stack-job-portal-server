@@ -23,9 +23,9 @@ const createBlogRouter = (BlogCollections) => {
         if (category && category !== "All") {
             query.category = category;
         }
-        console.log(query)
+
         const result = await BlogCollections.find(query).toArray();
-        console.log(result)
+
         res.send(result);
     })
 
