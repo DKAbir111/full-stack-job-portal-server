@@ -13,7 +13,19 @@ const createBlogRouter = (BlogCollections) => {
 
     //get all blogs
     router.get('/blogs', async (req, res) => {
-        const result = await BlogCollections.find().toArray();
+        const { q, category } = req.query;
+        let query = {};
+        if (q) {
+            query = {
+                $text: { $search: q }
+            };
+        }
+        if (category && category !== "All") {
+            query.category = category;
+        }
+        console.log(query)
+        const result = await BlogCollections.find(query).toArray();
+        console.log(result)
         res.send(result);
     })
 

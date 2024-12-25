@@ -11,6 +11,7 @@ const createWishlistRouter = (wishlistCollections, blogCollections) => {
         if (isExist) {
             return res.status(409).send({ message: "Wishlist item already exists." });
         }
+        const newWishlist = { email, blogId };
         const result = await wishlistCollections.insertOne(newWishlist);
         res.status(201).send(result);
     })
@@ -23,6 +24,7 @@ const createWishlistRouter = (wishlistCollections, blogCollections) => {
             wishLists.map(async wishList => {
                 const query = { _id: new ObjectId(wishList.blogId) }
                 const result = await blogCollections.findOne(query)
+                result.wishId = wishList._id
                 return result;
             })
         )
@@ -33,8 +35,9 @@ const createWishlistRouter = (wishlistCollections, blogCollections) => {
 
     //remove wishlist from wishlistCollection
     router.delete('/wishlist/:id', async (req, res) => {
-        const id = new ObjectId(req.params.id);
-        const result = await wishlistCollections.deleteOne({ _id: id });
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await wishlistCollections.deleteOne(query);
         res.send(result);
     })
 

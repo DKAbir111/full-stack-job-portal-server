@@ -24,7 +24,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
-        strict: true,
+        strict: false,
         deprecationErrors: true,
     }
 });
@@ -38,7 +38,8 @@ async function run() {
         const blogCollections = database.collection('blogs');
         const commentCollections = database.collection('comments');
         const wishlistCollections = database.collection('wishlists');
-
+        //creating index for enabling search
+        await blogCollections.createIndex({ title: "text", description: "text" });
         //Blog Routes
         app.use('/api', createBlogRouter(blogCollections));
 
