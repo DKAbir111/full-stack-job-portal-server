@@ -14,7 +14,6 @@ const app = express()
 app.use(cors({
     origin: ['http://localhost:5173',
         'https://blog-app-d54d1.web.app',
-        'https://console.firebase.google.com/project/blog-app-d54d1/overview',
         'https://blog-app-d54d1.firebaseapp.com'
     ],
     credentials: true,
