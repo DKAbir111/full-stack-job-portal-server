@@ -15,6 +15,7 @@ const createWishlistRouter = (wishlistCollections, blogCollections) => {
         res.status(201).send(result);
     })
 
+    //get data from wishlistCollection
     router.get('/wishlist', async (req, res) => {
         email = req.query.email;
         const wishLists = await wishlistCollections.find({ email }).toArray();
@@ -27,6 +28,14 @@ const createWishlistRouter = (wishlistCollections, blogCollections) => {
         )
         res.send(blog);
 
+    })
+
+
+    //remove wishlist from wishlistCollection
+    router.delete('/wishlist/:id', async (req, res) => {
+        const id = new ObjectId(req.params.id);
+        const result = await wishlistCollections.deleteOne({ _id: id });
+        res.send(result);
     })
 
     return router;
