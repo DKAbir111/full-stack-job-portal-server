@@ -11,9 +11,32 @@ require('dotenv').config()
 
 const app = express()
 //middleware
-app.use(cors());
-app.use(express.json())
+app.use(cors({
+    origin: ['http://localhost:5173'
+    ],
+    credentials: true,
+}));
 
+app.use(express.json())
+app.use(cookieParser())
+
+
+//verify token
+const verifyToken = (req, res, next) => {
+    const token = req.cookies?.token;
+    if (!token) return res.status(401).send('Access denied. No token provided.');
+
+    //verify token
+    jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
+        if (err) {
+            return res.status(403).send('Access denied. Invalid token.');
+        }
+        req.user = decode;
+        next();
+    })
+
+
+}
 
 app.get('/', (req, res) => {
 
@@ -65,7 +88,7 @@ async function run() {
         app.use('/api', createCommentRouter(commentCollections));
 
         //Wishlist Routes
-        app.use('/api', createWishlistRouter(wishlistCollections, blogCollections));
+        app.use('/api', createWishlistRouter(wishlistCollections, blogCollections, verifyToken));
 
 
 

@@ -3,7 +3,7 @@ const { ObjectId } = require('mongodb');
 
 const router = express.Router()
 
-const createWishlistRouter = (wishlistCollections, blogCollections) => {
+const createWishlistRouter = (wishlistCollections, blogCollections, verifyToken) => {
     //create a new wishlist
     router.post('/wishlist', async (req, res) => {
         const { email, blogId } = req.body;
@@ -17,8 +17,11 @@ const createWishlistRouter = (wishlistCollections, blogCollections) => {
     })
 
     //get data from wishlistCollection
-    router.get('/wishlist', async (req, res) => {
+    router.get('/wishlist', verifyToken, async (req, res) => {
         email = req.query.email;
+        if (req.user?.email != req.query?.email) {
+            return res.status(401).send('Access denied. Invalid user.');
+        }
         const wishLists = await wishlistCollections.find({ email }).toArray();
         const blog = await Promise.all(
             wishLists.map(async wishList => {
@@ -34,8 +37,11 @@ const createWishlistRouter = (wishlistCollections, blogCollections) => {
 
 
     //remove wishlist from wishlistCollection
-    router.delete('/wishlist/:id', async (req, res) => {
+    router.delete('/wishlist/:id', verifyToken, async (req, res) => {
         const id = req.params.id;
+        if (req.user?.email != req.body?.email) {
+            return res.status(401).send('Access denied. Invalid user.');
+        }
         const query = { _id: new ObjectId(id) }
         const result = await wishlistCollections.deleteOne(query);
         res.send(result);
