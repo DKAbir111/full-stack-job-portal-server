@@ -88,10 +88,20 @@ The purpose of this project is to develop a dynamic and responsive blog platform
 
 ---
 
+
+## Snapshots
+![Homepage](./screenshots/1.png)
+![Blog Details Page](./screenshots/2.png)
+![Wishlist Page](./screenshots/5.png)
+![Wishlist Page](./screenshots/4.png)
+
 ## Installation and Setup
 
 ### 1. Clone the repository:
-
 ```bash
-git clone <repository-url>
+git clone <https://github.com/DKAbir111/Let-s-Blog-Client.git>
 cd Blog-Website
+
+
+
+
