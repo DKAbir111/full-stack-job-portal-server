@@ -16,8 +16,8 @@ const createBlogRouter = (BlogCollections) => {
         const { q, category } = req.query;
         let query = {};
         if (q) {
-            query = {
-                $text: { $search: q }
+            query.title = {
+                $regex: { $regex: q, $options: "i" }
             };
         }
         if (category && category !== "All") {
