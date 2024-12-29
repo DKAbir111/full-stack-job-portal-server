@@ -15,11 +15,14 @@ const createBlogRouter = (BlogCollections) => {
     router.get('/blogs', async (req, res) => {
         const { q, category } = req.query;
         let query = {};
+
         if (q) {
             query.title = {
-                $regex: { $regex: q, $options: "i" }
+                $regex: q,
+                $options: "i"
             };
         }
+
         if (category && category !== "All") {
             query.category = category;
         }
@@ -27,7 +30,8 @@ const createBlogRouter = (BlogCollections) => {
         const result = await BlogCollections.find(query).toArray();
 
         res.send(result);
-    })
+    });
+
 
     //get a single blog by id
     router.get('/blog/:id', async (req, res) => {
